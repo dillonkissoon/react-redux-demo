@@ -9,6 +9,7 @@ import {
 export default ({ dispatch, getState }) =>
   (next) =>
   async (action) => {
+    // check that the action dispached to redux is for api request otherwise pass action to next redux middlewate
     if (action.type !== apiCallBegan.type) return next(action);
 
     // values from HTTP config
@@ -26,9 +27,11 @@ export default ({ dispatch, getState }) =>
     } = action.payload;
 
     try {
+      // run any speciifc onStart redux action for this API request
       if (onStart) dispatch({ type: onStart, payload: { ...onStartPayload } });
-
+      // pass action down across redux middlewares
       next(action);
+
       // const credentials = false;
       dispatch(updateHTTPState(networkRequestFeedback));
 
@@ -46,18 +49,26 @@ export default ({ dispatch, getState }) =>
 
       // required redux action to set response data in redux global state
       if (onSuccess)
-        await dispatch({ type: onSuccess.type, payload: response.data });
+        await dispatch({ type: onSuccess, payload: response.data });
 
       // always return the request response to the redux action creator
       return response.data;
     } catch (error) {
       // error response obj from axios
       const { message, response } = error;
+      const responseToPassToAction = JSON.stringify(response);
+
       // default redux action application API error handler
-      dispatch(apiCallFailed({ message, response }));
+      dispatch(
+        apiCallFailed({ message, response: JSON.parse(responseToPassToAction) })
+      );
 
       // if specific onError defined from action creator
-      if (onError) dispatch({ type: onError, payload: { message, response } });
+      if (onError)
+        dispatch({
+          type: onError,
+          payload: { message, response: JSON.parse(responseToPassToAction) },
+        });
 
       switch (response.status) {
         case 400:
@@ -68,6 +79,7 @@ export default ({ dispatch, getState }) =>
           break;
         case 404:
           console.log("TODO: application wide handle 404 not found request");
+          throw new Error(error.message);
         case 500:
           console.log("TODO: application wide handle server error");
           break;

@@ -2,7 +2,7 @@ import BaseModel from "./../models/base.model";
 
 /**
  * @class HttpRequestConfig
- * @description HTTP request configuration options
+ * @description HTTP request configuration options to pass to apiCallBegan redux action which triggers redux api.middleware
  * @param {object} options - object passed to Class
  * @property { string } options.url - URI for HTTP request
  * @property {object} options.data - HTTP request payload
@@ -28,6 +28,7 @@ export class HttpRequestConfig extends BaseModel {
     headers = {},
     networkRequestFeedback = true, // by default provide feedback to user HTTP request is running
   }) {
+    super();
     this.data = data;
     this.headers = headers;
     this.method = method;
