@@ -1,18 +1,28 @@
 import React, { useEffect } from "react";
 import Button from "../components/shared/form/formFields/button.component";
 import usePokemon from "../pokemon/pokemon.hook";
+import DefaultAppShell from "../layout/default.shell";
+import {Container} from 'react-bootstrap'
+
 
 const PokemonPage = () => {
-  const { getPokemonForList } = usePokemon();
+  const { getPokemonForList, pokemonList } = usePokemon();
 
   useEffect(() => {
+    // react component mounted
     getPokemonForList();
   }, []);
 
   return (
     <>
-      <h1>Pokemon Page</h1>;
-      <Button onClick={() => getPokemonForList(100)}>Get More Pokemon</Button>
+    <DefaultAppShell>
+      <Container>
+        <h1>Pokemon Page</h1>
+        {pokemonList.map(({name}) => {
+          return <p>{name}</p>
+        })}
+      </Container>
+    </DefaultAppShell>
     </>
   );
 };
