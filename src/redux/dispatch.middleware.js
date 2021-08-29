@@ -3,9 +3,6 @@ const dispatchMiddleware =
   (next) =>
   (action) => {
     try {
-      console.log(
-        `dispatch middleware called for every action, current dispatched redux action: ${action.type}`
-      );
       return next(action);
     } catch (error) {
       // do anything with the error

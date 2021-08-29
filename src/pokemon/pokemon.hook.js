@@ -25,8 +25,8 @@ const usePokemon = () => {
   const pokemon = useSelector(pokemonInGlobalState);
   const [searchError, setSearchError] = useState(null);
 
-  const getPokemonForList = async () => {
-    dispatch(getPokemonList());
+  const getPokemonForList = async (limit) => {
+    dispatch(getPokemonList(limit));
   };
 
   const lookupPokemonByName = async (pokemon) => {
