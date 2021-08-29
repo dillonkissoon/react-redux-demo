@@ -20,6 +20,13 @@ const { savePokemon } = slice.actions;
 
 export default slice.reducer;
 
+export const getPokemonList = (pageNumber) => (dispatch, getState) => {
+  const reqConfig = new HttpRequestConfig({
+    url: `/pokemon?limit=500&offset=500`,
+  }).toJSON();
+  dispatch(apiCallBegan(reqConfig));
+};
+
 /**
  * @function getPokemonByName
  * @description search for a pokemon by Name
@@ -50,7 +57,6 @@ const getPokemon = (value, key) => async (dispatch, getState) => {
 
     // don't make an API request if the pokemon exists in state
     if (found) return found;
-
     const requestConfig = new HttpRequestConfig({
       url: `/pokemon/${value}`,
       onSuccess: savePokemon.type,

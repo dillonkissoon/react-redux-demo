@@ -81,7 +81,7 @@ export default ({ dispatch, getState }) =>
           console.log("TODO: application wide handle 404 not found request");
           throw new Error(error.message);
         case 500:
-          console.log("TODO: application wide handle server error");
+          console.log("TODO: application wide handle 500 server error");
           break;
         default:
           throw new Error(error.message);

@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
+import usePokemon from "../pokemon/pokemon.hook";
 
-const PokemonSearchPage = () => {
+const PokemonPage = () => {
+  const { getPokemonForList } = usePokemon();
+
+  useEffect(() => {
+    getPokemonForList();
+  }, []);
+
   return <h1>Pokemon Page</h1>;
 };
 

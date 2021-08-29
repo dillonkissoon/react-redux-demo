@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   getPokemonByName as searchByName,
   pokemon as pokemonInGlobalState,
+  getPokemonList,
 } from "./pokemon.store";
 
 const pokemonContext = createContext();
@@ -22,16 +23,22 @@ export const PokemonProvider = ({ children }) => {
 const usePokemon = () => {
   const dispatch = useDispatch();
   const pokemon = useSelector(pokemonInGlobalState);
+  const [searchError, setSearchError] = useState(null);
+
+  const getPokemonForList = async () => {
+    dispatch(getPokemonList());
+  };
 
   const lookupPokemonByName = async (pokemon) => {
     try {
+      setSearchError(null);
       const response = await dispatch(searchByName(pokemon));
       return response;
     } catch (error) {
-      throw new Error(error.message);
+      setSearchError(error.message);
     }
   };
-  return { pokemon, lookupPokemonByName };
+  return { pokemon, lookupPokemonByName, searchError, getPokemonForList };
 };
 
 export default usePokemon;

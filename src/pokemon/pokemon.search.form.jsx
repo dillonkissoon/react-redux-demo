@@ -8,8 +8,6 @@ import Button from "./../components/shared/form/formFields/button.component";
 import usePokemon from "./pokemon.hook";
 
 const PokemonSearchForm = () => {
-  const [searchError, setSearchError] = useState(null);
-
   const methods = useForm({
     ...defaultFormSettings,
     defaultValues: {
@@ -18,21 +16,15 @@ const PokemonSearchForm = () => {
   });
 
   const { handleSubmit, register } = methods;
-  const { lookupPokemonByName } = usePokemon();
+  const { lookupPokemonByName, searchError } = usePokemon();
 
   /**
    *  @function searchPokemon
    * @description find a pokemon by name
    */
-  const searchPokemon = async ({ pokemon }) => {
-    try {
-      // reset error state on new searches
-      setSearchError(null);
-      // implement lookupPokemonByName on page from pokemon custom react hook
-      lookupPokemonByName(pokemon);
-    } catch (error) {
-      setSearchError(error.message);
-    }
+  const searchPokemon = ({ pokemon }) => {
+    // implement lookupPokemonByName on page from pokemon custom react hook
+    lookupPokemonByName(pokemon);
   };
 
   return (
@@ -54,6 +46,8 @@ const PokemonSearchForm = () => {
                 })}
               />
             </Col>
+          </Row>
+          <Row>
             <Col xs="auto">
               <Button className="d-grid" type="submit">
                 Search
