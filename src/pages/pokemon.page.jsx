@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Button from "../components/shared/form/formFields/button.component";
 import usePokemon from "../pokemon/pokemon.hook";
 import DefaultAppShell from "../layout/default.shell";
-import {Container} from 'react-bootstrap'
+import {Container, Table} from 'react-bootstrap'
 
 
 const PokemonPage = () => {
@@ -18,9 +18,25 @@ const PokemonPage = () => {
     <DefaultAppShell>
       <Container>
         <h1>Pokemon Page</h1>
-        {pokemonList.map(({name}) => {
-          return <p>{name}</p>
-        })}
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>
+                    Pokemon
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {pokemonList.map(({name}) => {
+                  return (
+                        <tr>
+                          <td>{name}</td>
+                          <td><Button>View Details</Button></td>
+                        </tr>
+                  )
+                })}
+              </tbody>
+            </Table>
       </Container>
     </DefaultAppShell>
     </>
