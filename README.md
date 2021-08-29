@@ -45,6 +45,10 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
+### Enviornment Variables
+
+You need to create a .env.development.local file in project root and copy the values from .env.sample then add your values to the [see React documentaion](https://create-react-app.dev/docs/adding-custom-environment-variables/)
+
 ### Code Splitting
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
