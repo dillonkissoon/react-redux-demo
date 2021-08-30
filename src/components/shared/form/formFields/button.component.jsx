@@ -5,20 +5,12 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
 // bootstrap
 import { Button as BootstrapButton } from "react-bootstrap";
-import { useView } from "./../../../../view-settings/view.hook";
 
 const Button = ({ children, variant, ...buttonProps }) => {
-  const { networkRequestActive } = useView();
-
   return (
     <>
-      <BootstrapButton
-        variant={variant}
-        disabled={networkRequestActive}
-        {...buttonProps}
-      >
-        {!networkRequestActive && <>{children}</>}
-        {networkRequestActive && <FontAwesomeIcon icon={faCircleNotch} spin />}
+      <BootstrapButton variant={variant} {...buttonProps}>
+        {children}
       </BootstrapButton>
     </>
   );

@@ -5,12 +5,12 @@ import {
   getPokemonByName as searchByName,
   pokemon as pokemonInGlobalState,
   getPokemonList,
-  pokemonList as creatures
+  pokemonList as creatures,
 } from "./pokemon.store";
 
 const pokemonContext = createContext();
 
-const usePokemonContect = () => {
+export const usePokemonContext = () => {
   return useContext(pokemonContext);
 };
 
@@ -24,8 +24,7 @@ export const PokemonProvider = ({ children }) => {
 const usePokemon = () => {
   const dispatch = useDispatch();
   const pokemon = useSelector(pokemonInGlobalState);
-  const pokemonList = useSelector(creatures)
-  const [searchError, setSearchError] = useState(null);
+  const pokemonList = useSelector(creatures);
 
   const getPokemonForList = async (limit) => {
     dispatch(getPokemonList(limit));
@@ -33,14 +32,19 @@ const usePokemon = () => {
 
   const lookupPokemonByName = async (pokemon) => {
     try {
-      setSearchError(null);
       const response = await dispatch(searchByName(pokemon));
       return response;
     } catch (error) {
-      setSearchError(error.message);
+      throw new Error(error.message);
     }
   };
-  return { pokemon, lookupPokemonByName, searchError, getPokemonForList, pokemonList };
+
+  return {
+    pokemon,
+    lookupPokemonByName,
+    getPokemonForList,
+    pokemonList,
+  };
 };
 
 export default usePokemon;

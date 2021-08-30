@@ -1,44 +1,68 @@
 import React, { useEffect } from "react";
 import Button from "../components/shared/form/formFields/button.component";
-import usePokemon from "../pokemon/pokemon.hook";
+import usePokemon, { PokemonProvider } from "../pokemon/pokemon.hook";
 import DefaultAppShell from "../layout/default.shell";
-import {Container, Table} from 'react-bootstrap'
-
+import { Container, Table } from "react-bootstrap";
+import PokemonSearchForm from "../pokemon/pokemon.search.form";
+import { useHistory } from "react-router";
 
 const PokemonPage = () => {
-  const { getPokemonForList, pokemonList } = usePokemon();
+  const { getPokemonForList, pokemonList, lookupPokemonByName, searchError } =
+    usePokemon();
+  const history = useHistory();
 
   useEffect(() => {
     // react component mounted
     getPokemonForList();
   }, []);
 
+  const viewPokemonDetails = (name) => {
+    try {
+      if (!name) throw new Error("invalid action missing name");
+      history.push(`/pokemon/${name}`);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+
+  const onPokemonSearch = (pokemon) => {
+    const { name } = pokemon;
+    viewPokemonDetails(name);
+  };
+
   return (
     <>
-    <DefaultAppShell>
-      <Container>
-        <h1>Pokemon Page</h1>
+      <PokemonProvider>
+        <DefaultAppShell>
+          <Container>
+            <h3>Search For a Pokemon</h3>
+            <PokemonSearchForm handleSearch={onPokemonSearch} />
+            <hr />
+            <h3>Pokemon List</h3>
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th>
-                    Pokemon
-                  </th>
+                  <th>Pokemon</th>
                 </tr>
               </thead>
               <tbody>
-                {pokemonList.map(({name}) => {
+                {pokemonList.map(({ name }) => {
                   return (
-                        <tr>
-                          <td>{name}</td>
-                          <td><Button>View Details</Button></td>
-                        </tr>
-                  )
+                    <tr key={name}>
+                      <td>{name}</td>
+                      <td>
+                        <Button onClick={() => viewPokemonDetails(name)}>
+                          View Details
+                        </Button>
+                      </td>
+                    </tr>
+                  );
                 })}
               </tbody>
             </Table>
-      </Container>
-    </DefaultAppShell>
+          </Container>
+        </DefaultAppShell>
+      </PokemonProvider>
     </>
   );
 };

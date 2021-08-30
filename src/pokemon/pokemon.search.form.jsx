@@ -5,9 +5,10 @@ import { Row, Form, Col, Alert } from "react-bootstrap";
 
 import Input from "../components/shared/form/formFields/input";
 import Button from "./../components/shared/form/formFields/button.component";
-import usePokemon from "./pokemon.hook";
+import { usePokemonContext } from "./pokemon.hook";
+import FormButton from "./../components/shared/form/formFields/submit.button";
 
-const PokemonSearchForm = () => {
+const PokemonSearchForm = ({ handleSearch }) => {
   const methods = useForm({
     ...defaultFormSettings,
     defaultValues: {
@@ -16,20 +17,33 @@ const PokemonSearchForm = () => {
   });
 
   const { handleSubmit, register } = methods;
-  const { lookupPokemonByName, searchError } = usePokemon();
+  const { lookupPokemonByName } = usePokemonContext();
+  const [searchResponse, setSearchResponse] = useState(null);
+  const [searchError, setSearchError] = useState(null);
+
+  useEffect(() => {
+    // run the handler after the search completes && there's no error
+    if (!searchError && searchResponse) handleSearch(searchResponse);
+  }, [searchError, searchResponse]);
 
   /**
    *  @function searchPokemon
    * @description find a pokemon by name
    */
-  const searchPokemon = ({ pokemon }) => {
-    // implement lookupPokemonByName on page from pokemon custom react hook
-    lookupPokemonByName(pokemon);
+  const searchPokemon = async ({ pokemon }) => {
+    try {
+      setSearchResponse(null);
+      setSearchError(null);
+      const response = await lookupPokemonByName(pokemon);
+      setSearchResponse(response);
+    } catch (error) {
+      setSearchError(error.message);
+    }
   };
 
   return (
     <>
-      {searchError && <Alert variant="danger">{searchError}</Alert>}
+      {searchError != null && <Alert variant="danger">{searchError}</Alert>}
       <FormProvider {...methods}>
         <Form onSubmit={handleSubmit(searchPokemon)}>
           <Row className="align-items-center">
@@ -49,9 +63,9 @@ const PokemonSearchForm = () => {
           </Row>
           <Row>
             <Col xs="auto">
-              <Button className="d-grid" type="submit">
+              <FormButton className="d-grid" type="submit">
                 Search
-              </Button>
+              </FormButton>
             </Col>
           </Row>
         </Form>

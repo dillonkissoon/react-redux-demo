@@ -1,25 +1,59 @@
-import React, {useEffect} from 'react';
-import {useParams} from 'react-router-dom'
-import usePokemon from '../pokemon/pokemon.hook';
+import React, { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
+import { useHistory, useLocation, useParams } from "react-router-dom";
+import DefaultAppShell from "../layout/default.shell";
+import usePokemon, { PokemonProvider } from "../pokemon/pokemon.hook";
+import PokemonSearchForm from "../pokemon/pokemon.search.form";
 
 const PokemonDetailsPage = () => {
-    const { name } = useParams();
-    const { lookupPokemonByName } = usePokemon();
+  const { name } = useParams();
+  const { lookupPokemonByName } = usePokemon();
+  const history = useHistory();
+  const location = useLocation();
 
-    useEffect(() => {
-        lookupPokemonByName(name);
-    }, [])
+  const [pokemon, setPokemon] = useState();
 
+  useEffect(() => {
+    if (name) loadPokemon(name);
+  }, [name]);
 
-    if (!name) return (
-        <>Pokemon Search Form</>
-    )
+  const loadPokemon = async (name) => {
+    try {
+      const response = await lookupPokemonByName(name);
+      setPokemon(response);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
-    if (name) return (
-        <>
-            <h1>Pokemon Details Page</h1>
-        </> 
-    );
-}
- 
+  const onPokemonSearch = ({ name }) => {
+    history.push(`${location.pathname}/${name}`);
+  };
+
+  return (
+    <>
+      <PokemonProvider>
+        <DefaultAppShell>
+          <Container>
+            {(!pokemon || !name) && (
+              <>
+                <PokemonSearchForm handleSearch={onPokemonSearch} />
+              </>
+            )}
+            {pokemon && name && (
+              <>
+                <h1>Details for {pokemon.name}</h1>
+                <img
+                  src={pokemon.sprites.front_default}
+                  alt={`image of ${pokemon.name}`}
+                />
+              </>
+            )}
+          </Container>
+        </DefaultAppShell>
+      </PokemonProvider>
+    </>
+  );
+};
+
 export default PokemonDetailsPage;

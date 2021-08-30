@@ -1,5 +1,5 @@
 import PokemonPage from "./pokemon.page";
-import PokemonDetailsPage from './pokemon.details.page';
+import PokemonDetailsPage from "./pokemon.details.page";
 
 export const ApplicationPath = "";
 
@@ -9,7 +9,7 @@ export default [
     component: PokemonPage,
   },
   {
-    path: ['/pokemon/:name'],
-    component: PokemonDetailsPage
-  }
+    path: ["/pokemon", "/pokemon/:name"],
+    component: PokemonDetailsPage,
+  },
 ];
